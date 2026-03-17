@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": 1773681024045,
+    "action": "register",
+    "tx_hash": "0e1b7268d515769cc97604bc3bc908fe0a308b78dc57b5278bb2cd26abe6aa74",
+    "lovelace": 10000000,
+    "destination": "addr1w9wa2yvfg0265uefd9sczff2v4j6yldl93k7j2cz564wxcg5c7yqv",
+    "details": "Registered agent 'DemoBot'"
+  },
+  {
+    "timestamp": 1773681054475,
+    "action": "update",
+    "tx_hash": "31aab7e7fa1d080689bc45e46a0a3f02904579f08f2c2702d5e5e28b4fe9d2e4",
+    "lovelace": 0,
+    "destination": "addr1w9wa2yvfg0265uefd9sczff2v4j6yldl93k7j2cz564wxcg5c7yqv",
+    "details": "Updated agent profile"
+  },
+  {
+    "timestamp": 1773681084917,
+    "action": "deregister",
+    "tx_hash": "929923ac4c99a95c9957394ffefaa19da04b952e7ef2a3c3e0e9f47ea8936494",
+    "lovelace": 0,
+    "destination": "addr1vyzw9jkld48fyacyqgxsxxec77epqqh8gmvs4hz954fqwhc7rauet",
+    "details": "Deregistered agent, deposit returned"
+  }
+]
