@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "vector-agent"
+version = "0.1.0"
+description = "Python SDK for the Vector Agent Registry — register, update, and manage AI agents on the Vector blockchain."
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Filip"},
+]
+
+dependencies = [
+    "pycardano>=0.19.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["vector_agent*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "integration: marks tests that require a live Vector testnet connection (deselect with '-m \"not integration\"')",
+]
+
+[tool.coverage.run]
+source = ["vector_agent"]
+omit = ["tests/*"]
