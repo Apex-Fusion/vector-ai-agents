@@ -7,7 +7,7 @@
 /// The NFT lives at the script address (never in the user's wallet), making it
 /// effectively soulbound. On deregister the NFT is burned.
 ///
-/// [ISKRA] No type changes needed. All fixes are in validation logic.
+/// [SECURITY] No type changes needed. All fixes are in validation logic.
 
 use cardano/address.{Credential}
 use cardano/transaction.{OutputReference}
@@ -22,7 +22,7 @@ pub type AgentDatum {
   description: ByteArray,
   /// List of capability tags (e.g. ["investing", "research"])
   capabilities: List<ByteArray>,
-  /// Framework identifier (e.g. "OpenClaw", "LangChain", "CrewAI")
+  /// Framework identifier (e.g. "AgentFramework", "LangChain", "CrewAI")
   framework: ByteArray,
   /// Off-chain endpoint URL for A2A communication
   endpoint: ByteArray,

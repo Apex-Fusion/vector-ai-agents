@@ -3,7 +3,7 @@
 **Reviewer:** the code reviewer
 **Date:** 2026-03-18
 **Scope:** Delta review of the security engineer's security fixes against original `validation.ak`
-**Input:** `iskra-fix-notes.md`, diff between original and compliant `validation.ak`
+**Input:** `fix-notes.md`, diff between original and compliant `validation.ak`
 
 ---
 

@@ -51,7 +51,7 @@ class AgentProfile:
     """List of capability tags (e.g. ['investing', 'research'])."""
 
     framework: str
-    """Framework identifier (e.g. 'OpenClaw', 'LangChain', 'CrewAI')."""
+    """Framework identifier (e.g. 'AgentFramework', 'LangChain', 'CrewAI')."""
 
     endpoint: str
     """Off-chain endpoint URL for A2A communication."""

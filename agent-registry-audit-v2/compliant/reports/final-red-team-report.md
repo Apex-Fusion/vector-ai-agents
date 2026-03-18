@@ -19,7 +19,7 @@ I found **one new Low-severity vector** related to staking credential variants t
 
 ## Remaining Vulnerabilities Found
 
-### BORKA-FINAL-01: Staking Credential Variant Ghost UTxOs
+### RT-FINAL-01: Staking Credential Variant Ghost UTxOs
 **Severity: Low**
 **Status: New finding**
 
@@ -129,7 +129,7 @@ These variant-address outputs:
 
 **Fix verification:** Both `validate_register` and `validate_update` use `list.filter` + singleton match to enforce exactly one output at the script address.
 
-**Bypass status:** Mostly fixed. The staking credential variant (BORKA-FINAL-01 above) is a partial bypass but at Low severity. The canonical ghost UTxO attack (same address, no staking credential) is fully blocked.
+**Bypass status:** Mostly fixed. The staking credential variant (RT-FINAL-01 above) is a partial bypass but at Low severity. The canonical ghost UTxO attack (same address, no staking credential) is fully blocked.
 
 **Verdict: Fix is effective for the primary attack vector. Residual Low-severity variant exists.**
 

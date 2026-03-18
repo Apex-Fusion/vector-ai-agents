@@ -10,7 +10,7 @@
 /// Core validation logic lives in `agent_registry/validation.ak`
 /// so it can be unit-tested independently.
 ///
-/// [ISKRA] No changes needed to the multi-validator wrapper.
+/// [SECURITY] No changes needed to the multi-validator wrapper.
 /// All security fixes are in validation.ak.
 
 use cardano/assets.{PolicyId}

@@ -82,7 +82,7 @@ class TestFullLifecycle:
             name="EnviroBot",
             description="Monitors environmental data on-chain",
             capabilities=["monitoring", "reporting"],
-            framework="OpenClaw",
+            framework="AgentFramework",
             endpoint="https://envirobot.example.com/a2a",
         )
 
@@ -92,7 +92,7 @@ class TestFullLifecycle:
         # Verify the register call args
         call_kwargs = mock_registry.register.call_args.kwargs
         assert call_kwargs["name"] == "EnviroBot"
-        assert call_kwargs["framework"] == "OpenClaw"
+        assert call_kwargs["framework"] == "AgentFramework"
         assert call_kwargs["capabilities"] == ["monitoring", "reporting"]
 
         # Audit: 1 entry

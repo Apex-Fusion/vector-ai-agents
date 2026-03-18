@@ -1,6 +1,6 @@
 # WS4: Agent Infrastructure — Design Document
 
-**Owner:** Filip
+**Owner:** Project Team
 **Sprint:** March 16–20, 2026
 **Status:** Day 5 complete — 30 Aiken + 96 Python offline + 15 integration tests passing, full lifecycle verified on Vector testnet, demo script ready
 

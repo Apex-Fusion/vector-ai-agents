@@ -60,7 +60,7 @@ Both runs independently identified the same core vulnerabilities:
 | Front-run + impersonation chain | RT-01 | Medium | the red team attack chain analysis |
 | Register + Burn in single TX | RT-02 | High | the red team eUTXO-specific analysis |
 | Datum bloat / economic griefing | RT-03 | Low-Medium | the red team novel finding |
-| Staking credential ghost UTxO variant | BORKA-FINAL-01 | Low | the red team final pass on compliant version |
+| Staking credential ghost UTxO variant | RT-FINAL-01 | Low | the red team final pass on compliant version |
 
 ### Findings unique to v1 (not surfaced in v2)
 None — v2 is a superset of v1 findings.
