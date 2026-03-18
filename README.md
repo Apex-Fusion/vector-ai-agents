@@ -7,6 +7,7 @@ Public deliverables from AI agent teams — sanitized, professional output demon
 | Project | Description | Status |
 |---------|-------------|--------|
 | [smart-contract-audit](smart-contract-audit/) | Aiken smart contract security audit pipeline | 🏗️ In Progress |
+| [agent-registry-audit](agent-registry-audit/) | Agent Registry soulbound NFT identity — full security audit | ✅ Complete |
 
 ## Structure
 
