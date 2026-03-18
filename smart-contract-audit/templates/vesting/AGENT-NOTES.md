@@ -1,6 +1,6 @@
 # Agent Notes — Vesting
 
-# Deployment Guide — Vesting
+# Deployment Guide — Vesting (Compliant)
 
 ## Prerequisites
 
@@ -61,7 +61,11 @@ After `vesting_end_time`, claim everything:
 - Same as partial claim, but no continuation output needed
 - `continuation_index` is ignored when `must_remain == 0`
 
-# Parameters — Vesting
+## Compliance Note
+
+This is the audit-passed version. See `reports/` for the full audit trail.
+
+# Parameters — Vesting (Compliant)
 
 ## Datum Parameters
 
@@ -92,145 +96,166 @@ After `vesting_end_time`, claim everything:
 - `vesting_end_time <= cliff_time` → Full vesting occurs immediately at cliff
 - `vesting_end_time == cliff_time` → Same as above (instant vesting at cliff)
 
-# Integration Points — Vesting
+# Integration Points — Vesting (Compliant)
 
 ## Off-Chain Components Needed
 
-1. **Time service:** Convert wall-clock time to POSIX milliseconds. Account for slot length and chain parameters.
-2. **Transaction builder:** Must support inline datums and script spending.
-3. **UTxO query:** Find vesting UTxOs by script address + datum (beneficiary PKH).
-4. **Vesting calculator:** Replicate the on-chain math off-chain to show users their claimable balance.
+1. **Transaction builder:** Any Cardano-compatible TX builder (PyCardano, Lucid, cardano-cli, mesh).
+2. **UTxO query:** Find the vesting UTxO at the script address, parse datum for schedule details.
+3. **Time service:** Convert wall-clock time to POSIX ms for computing claimable amounts off-chain.
+4. **Output index management:** The redeemer requires exact output indices — your TX builder must track these.
 
-## Vesting Calculator (Off-Chain)
+## API Integration
 
-```python
-def compute_claimable(total, cliff, end, current_time, locked):
-    if current_time < cliff:
-        return 0
-    if current_time >= end:
-        vested = total
-    else:
-        elapsed = current_time - cliff
-        duration = end - cliff
-        vested = total * elapsed // duration  # integer division, matches on-chain
-    return min(vested, locked)
+### Query Vesting Schedule
+```
+GET /utxos?address=<script_address>
+→ Parse datum to extract: beneficiary, total_vesting_amount, cliff_time, vesting_end_time
+→ Compute current vested amount off-chain for display
 ```
 
-## Multi-Beneficiary Workflow
+### Submit Partial Claim
+```
+POST /tx/submit
+→ Input: vesting UTxO
+→ Redeemer: Claim { beneficiary_index, continuation_index }
+→ Output[beneficiary_index]: beneficiary PKH with ≥ claimable lovelace
+→ Output[continuation_index]: script address with ≥ remaining lovelace + same datum
+→ Validity range: tight lower bound at desired claim time
+→ Signatories: beneficiary
+```
 
-Each beneficiary gets their own UTxO at the script address. To vest for N people:
+### Submit Full Claim
+```
+POST /tx/submit
+→ Same as partial, but no continuation output needed after vesting_end_time
+```
+
+## Multi-Party Workflow
 
 ```
-Funder → N transactions → N UTxOs at script address
-Each UTxO has its own VestingDatum with different beneficiary
+Funder                     Beneficiary
+  │                            │
+  ├── Lock ADA at script       │
+  │   (with VestingDatum)      │
+  │                            │
+  │                      ◄─────┤  Partial claim (between cliff and end)
+  │                            │  → Continuation UTxO holds remainder
+  │                            │
+  │                      ◄─────┤  Full claim (after vesting_end)
+  │                            │  → All remaining funds released
 ```
 
-## Dashboard Integration
+## Monitoring
 
-Monitor the script address and compute:
-- Total locked across all vesting UTxOs
-- Per-beneficiary claimable amount (based on current time)
-- Claimed vs remaining per beneficiary
-- Next significant vesting event (cliff, 25%, 50%, 75%, full)
+- **New UTxO at script address** → vesting position created
+- **UTxO consumed + new script UTxO created** → partial claim executed
+- **UTxO consumed, no script UTxO created** → full claim (vesting complete)
 
-## Event Hooks
+# Common Modifications — Vesting (Compliant)
 
-- **Cliff reached:** Alert beneficiary they can start claiming
-- **Claim transaction:** Log the amount claimed and update dashboard
-- **Full vesting:** Alert that all funds are now claimable
-
-# Common Modifications — Vesting
+> **Note:** This is the audit-passed version. Any modifications will require re-auditing the changed code.
 
 ## 1. Add Cancellation/Revocation
 
-The template has no cancellation path. To add one:
+Allow the funder to revoke unvested tokens:
 
 ```aiken
 pub type VestingRedeemer {
   Claim { beneficiary_index: Int, continuation_index: Int }
-  Revoke  // new: sender can revoke unvested portion
+  Revoke  // funder cancels remaining vesting
 }
 ```
 
-In the validator:
-- Add a `sender` field to the datum
-- For `Revoke`: require sender signature, return only the **unvested** portion to sender, and pay the **vested** portion to beneficiary
+Add a `funder` field to the datum and require their signature for Revoke. Unvested amount returns to funder; vested amount goes to beneficiary.
 
-## 2. Multi-Asset Vesting
+## 2. Add Multi-Token Vesting
 
-To vest native tokens proportionally alongside ADA:
+Support native tokens alongside ADA:
 
-- Track each asset separately in the datum
-- Compute vested amount per asset using the same time-based formula
-- Verify continuation UTxO holds the correct remaining amount of each asset
+- Track `total_vesting_value` as a `Value` instead of just lovelace
+- Use `quantity_of` for each asset in the value
+- Proportional calculation applies to each asset independently
 
-## 3. Milestone-Based Vesting
+## 3. Add Cliff Amount (Step Vesting)
 
-Replace linear interpolation with discrete milestones:
+Release a fixed percentage at the cliff, then linear for the remainder:
 
 ```aiken
 pub type VestingDatum {
   beneficiary: VerificationKeyHash,
-  milestones: List<(Int, Int)>,  // (time, cumulative_amount)
+  total_vesting_amount: Int,
+  cliff_time: Int,
+  cliff_amount: Int,  // released immediately at cliff
+  vesting_end_time: Int,
 }
 ```
 
-Find the latest milestone before `current_time` and use its cumulative amount.
+## 4. Add Multiple Milestones
 
-## 4. Batched Claims (Advanced)
+Replace linear vesting with milestone-based releases:
 
-The current contract enforces `script_input_count == 1`. To allow batching:
+```aiken
+pub type Milestone {
+  time: Int,
+  cumulative_amount: Int,
+}
+```
 
-- Use NFT thread tokens instead of single-input enforcement
-- Each vesting UTxO gets a unique NFT minted at creation
-- The redeemer references the NFT to identify "its" output
-- This allows multiple vesting claims in one transaction
+The validator checks which milestones have passed and sums accordingly.
 
-⚠️ This is significantly more complex. Only do this if batch efficiency is critical.
+## 5. Allow Batched Claims
 
-## 5. Admin Override
+Remove the `script_input_count == 1` constraint to allow batching. Replace with output-index pinning per input (more complex but higher throughput). Requires careful anti-double-satisfaction design.
 
-Add an admin who can modify the schedule or redirect funds:
+## 6. Add Beneficiary Transfer
 
-- Add `admin: VerificationKeyHash` to datum
-- Add `AdminOverride { new_beneficiary }` redeemer variant
-- Require admin signature
-- Be careful: this introduces centralization risk
+Allow the beneficiary to transfer their vesting position:
 
-# Gotchas and Edge Cases — Vesting
+```aiken
+Transfer { new_beneficiary: VerificationKeyHash } -> {
+  // Require current beneficiary signature
+  // Create continuation with new_beneficiary in datum
+}
+```
+
+# Gotchas and Edge Cases — Vesting (Compliant)
 
 ## Critical
 
-### No Batched Claims
-The `script_input_count == 1` constraint means each claim requires its own transaction. If a beneficiary has multiple vesting UTxOs (e.g., from different funders), each must be claimed separately. This is a deliberate security trade-off.
+### Single-Script-Input Constraint
+The validator enforces `script_input_count == 1`. You **cannot** batch multiple vesting claims in a single transaction. Each claim requires its own transaction.
 
-### Degenerate Datums Are Permanent
-If `total_vesting_amount <= 0`, the UTxO is permanently unspendable. There is no recovery mechanism. **Always validate datums off-chain before creating the UTxO.**
-
-### No Cancellation
-Once funds are locked, only the beneficiary can ever claim them. There is no sender reclaim or admin override. Plan accordingly.
+### Degenerate Datums Create Unspendable UTxOs
+If `total_vesting_amount <= 0`, the `claimable` will be ≤ 0 and the `beneficiary_paid` check fails (requires `claimable > 0`). The UTxO becomes permanently locked. Validate datums off-chain before creating.
 
 ## Important
 
-### Validity Range Matters
-The vested amount is computed from the **lower bound** of the validity range. A wider range means a lower (earlier) lower bound, which means less claimable. Set a tight validity range (e.g., 5-10 minutes) for optimal claims.
+### Lower-Bound Timing
+The vested amount is computed from the **lower bound** of the validity range. This is conservative — the beneficiary always gets at most what's vested at the earliest possible execution time. Set a tight lower bound for maximum claim precision.
+
+### No Finite Lower Bound = Transaction Fails
+The validator calls `get_lower_bound` which expects `Finite(t)`. If no lower bound is set on the validity range, the transaction aborts. Always set an explicit lower bound.
 
 ### Integer Truncation
-Vested amounts round down (integer division). At 1/3 of the vesting period, a 100 ADA vesting gives 33.333... → 33 ADA claimable. The last fraction is claimable only after full vesting. This is by design (conservative, favors the contract).
+Linear interpolation uses integer division, which truncates (rounds down). This slightly favors the contract (beneficiary gets marginally less). The difference is negligible for most schedules.
 
-### Min-UTxO on Continuation
-When making a partial claim, the continuation UTxO must hold at least Cardano's minimum UTxO value (~1-2 ADA). If the remaining amount is below min-UTxO, the off-chain code must handle this (e.g., leave extra ADA or claim the full remaining amount).
-
-### Excess Lovelace
-If more ADA is locked than `total_vesting_amount`, the excess remains at the script after full vesting. The beneficiary needs a second transaction to claim it (because `must_remain` will be > 0 due to `locked - claimable`).
+### Datum Must Be Identical on Continuation
+The continuation UTxO must carry an **identical** datum (all four fields match). If any field differs — even by 1ms — the transaction fails. Do not attempt to "update" the vesting schedule via continuation.
 
 ## Edge Cases
 
+### Instant Vesting at Cliff
+If `vesting_end_time <= cliff_time`, the full amount vests immediately at `cliff_time`. The `elapsed / duration` formula would divide by zero, but the `if current_time >= d.vesting_end_time` branch catches this first.
+
+### Locked Amount > total_vesting_amount
+The `claimable` is clamped to `min(vested_amount, locked_lovelace)`. If you lock more ADA than `total_vesting_amount`, the excess remains at the script address after the full vesting period. You'll need a final claim transaction where the full amount is vested.
+
+### Locked Amount < total_vesting_amount
+The vested amount may exceed what's actually locked. The clamping handles this safely — beneficiary can only claim what's there.
+
+### Output Index Collision
+`beneficiary_index` and `continuation_index` must be different integers. If they match, the validator rejects the transaction. The off-chain builder must place these at distinct output positions.
+
 ### Slot-to-POSIX Drift
-If chain parameters change (slot length), vesting schedules created before the change may drift. This is a fundamental Cardano limitation, not specific to this contract.
-
-### Concurrent Claims
-Two transactions claiming from the same UTxO will conflict — one will fail (normal eUTxO contention). This is harmless: the losing transaction simply doesn't execute.
-
-### Lower Bound Assumed Inclusive
-The validator assumes the lower bound of the validity range is inclusive (standard for Cardano). If an exclusive lower bound were ever produced, the time is off by 1ms in the conservative direction.
+If chain parameters change (slot length), vesting schedules created before the change may drift. This is a known limitation of all time-based Cardano contracts.

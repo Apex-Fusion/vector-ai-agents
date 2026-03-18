@@ -659,3 +659,27 @@ These patterns should be in every eUTXO contract:
 ---
 
 *This document is based on findings from security audits conducted in March 2026. All vulnerabilities described were identified and fixed in the audited contracts. The patterns and mitigations are applicable to any eUTXO smart contract development.*
+
+---
+
+## Appendix: On-Chain Exploit Evidence
+
+The following double satisfaction attacks were executed on Vector testnet as part of the v2 audit methodology. These are real, confirmed exploits — not theoretical.
+
+### Simple Escrow — Double Satisfaction (Reclaim)
+
+- **Attack TX:** [`5ada16bbc96247c277711e1c9fde1e48749ad8f9b8eff78fca3340222250afcf`](https://vector.testnet.apexscan.org/en/transaction/5ada16bbc96247c277711e1c9fde1e48749ad8f9b8eff78fca3340222250afcf)
+- **Method:** Spent 2 escrow UTxOs (10 + 7 AP3X) with Reclaim redeemer, created ONE output (10 AP3X)
+- **Stolen:** 7 AP3X — validator accepted because `list.any` found the same 10 AP3X output for both invocations
+- **Fix:** `script_input_count == 1` — compliant contract rejected the same attack
+
+### Donation Pool — Double Satisfaction (Distribute)
+
+- **Attack TX:** [`872a5537a9422bdf468ab83c041a3e743b697838b08777d48c5d8d24ce87fa86`](https://vector.testnet.apexscan.org/en/transaction/872a5537a9422bdf468ab83c041a3e743b697838b08777d48c5d8d24ce87fa86)
+- **Method:** Spent 2 pool UTxOs (10 + 7 AP3X) with same Distribute redeemer (8 AP3X to recipient), kept 9 AP3X as change
+- **Stolen:** 9 AP3X — both validator invocations passed budget check (8 ≤ 17) and `list.any` found same output
+- **Fix:** `script_input_count == 1` — compliant contract rejected the same attack
+
+### Key Takeaway
+
+Every contract that used `list.any` for output matching without `script_input_count == 1` was exploitable on the live chain. The fix is one line of code. There is no excuse for shipping without it.

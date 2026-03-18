@@ -5,11 +5,12 @@
 /// distribute funds to verified recipients.
 ///
 /// ## Security considerations
-/// - **Double satisfaction**: Each consumed pool UTxO independently verifies
-///   that the total outputs to recipients cover the distribution amounts.
-///   We also verify that ALL inputs from this script share the same admin
-///   and that the total distributed equals the total input value (minus
-///   what may return to the script as change).
+/// - **Double satisfaction**: Fixed by requiring `script_input_count == 1`.
+///   Only one UTxO from this script address may be spent per transaction.
+///   This eliminates the `list.any` double satisfaction vector: each TX
+///   processes exactly one UTxO, so each validator invocation is independent.
+/// - **Budget check**: With `script_input_count == 1`, `total_input_lovelace`
+///   equals the single UTxO's value — no longer inflated by multi-input batching.
 /// - **Datum hijacking**: Datum is read from the script's own resolved input
 ///   via output_reference. We validate admin from each input's datum.
 /// - **Redeemer manipulation**: The redeemer is a typed Distribution list.
@@ -41,6 +42,17 @@ validator donation_pool {
     expect Some(own_input) = find_input(tx.inputs, own_oref)
     let script_address = own_input.output.address
 
+    // FIX: Prevent double satisfaction by enforcing exactly one script input
+    // per transaction. When two UTxOs from this script are spent in one TX,
+    // both validator invocations see the same tx.outputs — allowing `list.any`
+    // to satisfy both using a single set of recipient outputs. By limiting to
+    // one script input, each TX processes exactly one UTxO independently.
+    // This also makes the budget check accurate: total_input_lovelace now
+    // reflects only this UTxO's value, not an inflated multi-input sum.
+    let script_input_count =
+      list.count(tx.inputs, fn(i) { i.output.address == script_address })
+    expect script_input_count == 1
+
     let Distribute { distributions } = redeemer
     {
         // 1. Admin must have signed the transaction.
@@ -62,10 +74,11 @@ validator donation_pool {
             list.unique(list.map(distributions, fn(dist) { dist.recipient })),
           )
 
-        // 4. Compute total lovelace across ALL script inputs in this TX.
-        //    All script inputs must share the same admin (prevents mixing
-        //    pools from different admins in one TX — defends against
-        //    cross-pool attacks and ensures single-admin authority).
+        // 4. Compute total lovelace across script inputs in this TX.
+        //    With script_input_count == 1 enforced above, this is always
+        //    just the single UTxO's value. The all_same_admin check below
+        //    is now redundant (there is only one script input) but kept
+        //    for defensive clarity.
         let script_inputs =
           list.filter(
             tx.inputs,

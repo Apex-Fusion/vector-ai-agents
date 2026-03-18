@@ -1,6 +1,6 @@
 # Agent Notes — Simple Dex
 
-# Deployment Guide — Simple DEX (Template)
+# Deployment Guide — Simple DEX (Compliant)
 
 ## Prerequisites
 
@@ -74,7 +74,11 @@ redeemer = {
 - Double-check exchange rate arithmetic — ceiling division favors the maker
 - Ensure adequate collateral UTxO for script execution
 
-# Parameters — Simple DEX (Template)
+## Compliance Note
+
+This is the audit-passed version. See `reports/` for the full audit trail.
+
+# Parameters — Simple DEX (Compliant)
 
 ## Datum Parameters
 
@@ -119,7 +123,7 @@ required_b = ceil(locked_a × rate_denominator / rate_numerator)
 - **ADA vs tokens:** For ADA, use empty bytestrings. The validator handles both via `get_asset_amount`.
 - **Offer size:** The locked value IS the offer. There are no partial fills.
 
-# Integration Points — Simple DEX (Template)
+# Integration Points — Simple DEX (Compliant)
 
 ## Off-Chain Components Needed
 
@@ -175,7 +179,13 @@ Maker                          Taker
 - **UTxO consumed with Take** → offer filled; check maker output for payment
 - **UTxO consumed with Cancel** → offer withdrawn by maker
 
-# Common Modifications — Simple DEX (Template)
+## Compliance Evidence
+
+See `reports/` for audit reports and `tests/` for test results demonstrating all integration paths work correctly.
+
+# Common Modifications — Simple DEX (Compliant)
+
+> **Note:** This is the audit-passed version. Any modifications will require re-auditing the changed code.
 
 ## 1. Add Partial Fills
 
@@ -244,7 +254,7 @@ pub type SwapDatum {
 
 If `Some(taker)`, require that PKH in `extra_signatories`.
 
-# Gotchas and Edge Cases — Simple DEX (Template)
+# Gotchas and Edge Cases — Simple DEX (Compliant)
 
 ## Critical
 

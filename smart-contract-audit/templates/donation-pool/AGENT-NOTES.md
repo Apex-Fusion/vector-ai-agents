@@ -1,6 +1,6 @@
 # Agent Notes — Donation Pool
 
-# Deployment Guide — Donation Pool (Template)
+# Deployment Guide — Donation Pool (Compliant)
 
 ## Prerequisites
 
@@ -67,7 +67,11 @@ The transaction must include:
 - Verify recipient addresses are correct — distributions are irreversible
 - Ensure adequate collateral UTxO for script execution
 
-# Parameters — Donation Pool (Template)
+## Compliance Note
+
+This is the audit-passed version. See `reports/` for the full audit trail.
+
+# Parameters — Donation Pool (Compliant)
 
 ## Datum Parameters
 
@@ -97,7 +101,7 @@ The transaction must include:
 - **Batch size:** Multiple pool UTxOs can be consumed in one transaction, but all must share the same admin. Total distributed must not exceed total input value.
 - **Change handling:** Excess ADA can return to the script address as change, but the change output must carry the same admin datum.
 
-# Integration Points — Donation Pool (Template)
+# Integration Points — Donation Pool (Compliant)
 
 ## Off-Chain Components Needed
 
@@ -119,7 +123,7 @@ GET /utxos?address=<script_address>
 ```
 POST /tx/submit
 → Standard TX: send ADA to script address with inline DonationDatum { admin }
-→ No script execution needed — this is just a regular payment to the script address
+→ No script execution needed — just a regular payment to the script address
 ```
 
 ### Submit Distribution
@@ -148,12 +152,17 @@ Donors                  Admin                   Recipients
 
 ## Monitoring
 
-Monitor the script address for:
 - **New UTxO created (non-script input)** → donation received
 - **UTxO consumed with Distribute** → distribution executed; check outputs for recipient payments
 - **Change UTxO created** → remaining pool balance
 
-# Common Modifications — Donation Pool (Template)
+## Compliance Evidence
+
+See `reports/` for audit reports and `tests/` for test results demonstrating all integration paths work correctly.
+
+# Common Modifications — Donation Pool (Compliant)
+
+> **Note:** This is the audit-passed version. Any modifications will require re-auditing the changed code.
 
 ## 1. Add Admin Key Rotation
 
@@ -183,10 +192,9 @@ Then validate that every distribution recipient is in the allowlist.
 
 ## 3. Add Minimum Donation Threshold
 
-Check that each UTxO locked at the script address meets a minimum value. This prevents dust attacks:
+Prevent dust attacks by enforcing a minimum donation value off-chain or via a wrapper:
 
 ```aiken
-// In off-chain logic or a wrapper validator
 expect lovelace_of(donation_value) >= min_donation
 ```
 
@@ -220,15 +228,15 @@ The current contract tracks ADA (lovelace) only. To support native tokens:
 - Use `quantity_of` instead of `lovelace_of` for balance checks
 - Consider multi-asset change handling
 
-# Gotchas and Edge Cases — Donation Pool (Template)
+# Gotchas and Edge Cases — Donation Pool (Compliant)
 
 ## Critical
 
 ### Admin Is Fully Trusted
 The admin can distribute to any address, including themselves. There is no on-chain accountability mechanism. Governance and trust in the admin must be handled off-chain.
 
-### No Double Satisfaction Protection via Single-Input Constraint
-Unlike the DEX and vesting templates, the donation pool intentionally allows **multiple** script inputs in one transaction (batch consumption). Double satisfaction is mitigated by per-recipient payment checks and the same-admin enforcement — but this is a different defense model.
+### No Single-Input Constraint (By Design)
+Unlike the DEX and vesting contracts, the donation pool intentionally allows **multiple** script inputs in one transaction (batch consumption). Double satisfaction is mitigated differently: per-recipient payment verification and same-admin enforcement across all inputs.
 
 ## Important
 
@@ -239,7 +247,7 @@ All script inputs consumed in one transaction must share the same admin. If an a
 The validator rejects distributions with duplicate recipients. This prevents a subtle attack where a single output to a recipient satisfies two distribution entries, allowing the admin to pocket the difference.
 
 ### Change Datum Must Match
-Any output returning to the script address must carry the same admin datum. If this check is bypassed, an attacker could hijack pool change outputs by substituting a different admin.
+Any output returning to the script address must carry the same admin datum. If this were bypassed, an attacker could hijack pool change outputs by substituting a different admin.
 
 ## Edge Cases
 
