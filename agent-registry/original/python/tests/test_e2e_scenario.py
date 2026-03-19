@@ -82,7 +82,7 @@ class TestFullLifecycle:
             name="EnviroBot",
             description="Monitors environmental data on-chain",
             capabilities=["monitoring", "reporting"],
-            framework="OpenClaw",
+            framework="OpenClaw"  # one of many supported frameworks,
             endpoint="https://envirobot.example.com/a2a",
         )
 

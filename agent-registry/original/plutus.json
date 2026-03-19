@@ -92,7 +92,7 @@
             },
             {
               "title": "framework",
-              "description": "Framework identifier (e.g. \"OpenClaw\", \"LangChain\", \"CrewAI\")",
+              "description": "Framework identifier (e.g. \"OpenClaw\", \"LangChain\", \"CrewAI\", \"AutoGen\", \"ElizaOS\")",
               "$ref": "#/definitions/ByteArray"
             },
             {
