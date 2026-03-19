@@ -20,7 +20,7 @@ pub type AgentDatum {
   description: ByteArray,
   /// List of capability tags (e.g. ["investing", "research"])
   capabilities: List<ByteArray>,
-  /// Framework identifier (e.g. "OpenClaw", "LangChain", "CrewAI", "AutoGen", "ElizaOS")
+  /// Framework identifier (e.g. "OpenClaw", "LangChain", "CrewAI")
   framework: ByteArray,
   /// Off-chain endpoint URL for A2A communication
   endpoint: ByteArray,
