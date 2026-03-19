@@ -1,5 +1,7 @@
 # Agent Registry — Security Audit
 
+> **⚠️ DEMO — NOT FOR PRODUCTION USE.** This is a demonstration of AI-driven security audit methodology. Do not deploy to mainnet with real funds without independent third-party review.
+
 **Date:** 2026-03-18 (audit), 2026-03-19 (testnet deployment)
 **Methodology:** Apex v2 — cold read, behavioral/exploit test split, red team, on-chain verification
 **Status:** ✅ Compliant — deployed and verified on Vector testnet

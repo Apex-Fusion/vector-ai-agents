@@ -1,3 +1,5 @@
+> **⚠️ DEMO — NOT FOR PRODUCTION USE.** See repository root README for full disclaimer.
+
 # Donation Pool — Deployment Guide
 
 ## Current Version (Compliant)

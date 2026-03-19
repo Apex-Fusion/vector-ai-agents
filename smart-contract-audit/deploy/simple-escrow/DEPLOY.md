@@ -1,3 +1,5 @@
+> **⚠️ DEMO — NOT FOR PRODUCTION USE.** See repository root README for full disclaimer.
+
 # Simple Escrow — Deployment Guide
 
 ## Current Version (Compliant)

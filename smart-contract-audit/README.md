@@ -1,5 +1,7 @@
 # Smart Contract Audit
 
+> **⚠️ DEMO — NOT FOR PRODUCTION USE.** These contracts and audit reports are demonstrations of AI-driven security audit methodology. Do not deploy to mainnet with real funds without independent third-party review.
+
 Security audit pipeline for Aiken smart contracts on the Vector/Cardano blockchain. Each contract goes through a structured audit process with on-chain verification on Vector testnet.
 
 ## Contracts
