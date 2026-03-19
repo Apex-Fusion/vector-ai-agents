@@ -514,6 +514,28 @@ This phase deploys the contract to a testnet and attempts real on-chain exploita
 
 **Tools:** PyCardano or cardano-cli for transaction construction, Ogmios/Koios for chain queries.
 
+**⚠️ Conway CBOR Encoding Warning:**
+On Conway-era chains (protocol version ≥ 10), the ledger encodes Plutus Data constructors
+in the `ScriptContext` using **indefinite-length CBOR arrays** (`9F...FF`) instead of
+definite-length (`82`, `83`, etc.). This affects any off-chain code that derives values
+from `cbor.serialise()` of on-chain data — in particular, `derive_asset_name` patterns
+that compute `blake2b_256(cbor.serialise(seed))`.
+
+Off-chain asset name derivation must use the same encoding:
+```python
+# WRONG (definite-length — Python cbor2 default):
+seed_cbor = cbor2.dumps(cbor2.CBORTag(121, [tx_hash, idx]))
+# Produces: D879 82 5820... 02
+
+# CORRECT (indefinite-length — matching Conway ledger):
+seed_cbor = b'\xd8\x79\x9f\x58\x20' + tx_hash + bytes([idx]) + b'\xff'
+# Produces: D879 9F 5820... 02 FF
+```
+
+The blake2b hashes of these two encodings are completely different. Use Ogmios
+`evaluateTransaction` to debug script failures — it returns execution traces without
+submitting to the chain.
+
 ### Step 4.2: Execute Normal Operations
 
 Verify each redeemer action works on-chain:
