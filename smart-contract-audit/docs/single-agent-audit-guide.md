@@ -6,6 +6,8 @@
 >
 > **Scope:** Aiken validators using Plutus V3 on eUTxO chains.
 >
+> **What you will learn from this guide:** A 5-phase audit methodology covering 10 check classes — 6 first-pass critical checks (double satisfaction, output-index pinning, cross-input consistency, integer arithmetic, token identity, and tautological datum validation) plus 4 full-scan categories (datum integrity, value preservation, authorization, and timing). You will learn to identify, test, verify fixes for, and report on each class.
+>
 > **No prior knowledge of the methodology's origin is required.** Everything you need is in this document.
 
 ---
@@ -85,7 +87,7 @@ This phase is pure code reading. No tests, no deployment. Read the contract and 
 
 ### Step 1.2: First-Pass Critical Checks (MANDATORY — Do These Before Anything Else)
 
-These five checks catch the most common and most severe eUTxO vulnerabilities. They are ordered by historical frequency and severity. **Do not skip any.**
+These checks catch the most common and most severe eUTxO vulnerabilities. They cover 10 check classes across first-pass critical analysis and full vulnerability scanning. The first-pass checks below are ordered by historical frequency and severity. **Do not skip any.**
 
 #### Check 1: Double Satisfaction via `list.any` — CRITICAL CLASS
 
@@ -228,9 +230,63 @@ fn ceiling_div(a: Int, b: Int) -> Int {
 
 ---
 
+#### Check 6: Tautological Datum Validation — HIGH CLASS
+
+**What it is:** When a contract updates its datum (state continuation), it must verify that certain fields are preserved from the **old** datum. A tautological check extracts a field from the **new** datum and compares it back against the new datum — this always passes, regardless of what the attacker put in the output datum. Any "preserved" field can be silently rewritten.
+
+**How to check:**
+1. Find all datum update / continuation validation functions
+2. For each preservation check: identify where values are extracted — from `datum_old` (the input datum) or `datum_new` (the output datum)?
+3. If any "preservation" check extracts from `datum_new` and compares back to `datum_new`: **HIGH finding**
+4. Check fold-based validation of list fields — does it validate the full list or only the appended portion?
+
+**Vulnerable code example:**
+```aiken
+// ❌ TAUTOLOGICAL — comparing datum_new against a struct built from its own fields
+let beneficiary = datum_new.beneficiary
+let total = datum_new.total
+expect datum_new == SubscriptionDatum {
+  beneficiary: beneficiary,   // extracted FROM datum_new — always matches
+  total: total,               // extracted FROM datum_new — always matches
+  last_claimed: new_timestamp,
+}
+// Attacker can change beneficiary and total to anything — check always passes
+```
+
+**Attack scenario:**
+```
+Original datum: { beneficiary: Beneficiary, total: 1000 ADA, last_claimed: t0 }
+
+Attacker builds a transaction that updates the datum to:
+  { beneficiary: Attacker, total: 1000 ADA, last_claimed: t1 }
+
+The validator extracts beneficiary from the NEW datum (Attacker),
+then checks datum_new.beneficiary == Attacker → True ✓
+
+Attacker is now the beneficiary. Next claim sends funds to Attacker.
+```
+
+**Safe code example:**
+```aiken
+// ✅ CORRECT — compare new datum fields against the OLD datum (from spent input)
+let beneficiary = datum_old.beneficiary   // from the INPUT, committed on-chain
+let total = datum_old.total               // from the INPUT, committed on-chain
+expect datum_new == SubscriptionDatum {
+  beneficiary: beneficiary,   // must match the original — cannot be changed
+  total: total,               // must match the original — cannot be changed
+  last_claimed: new_timestamp,
+}
+```
+
+**Why this works:** The old datum comes from the spent input, which is committed on-chain and cannot be forged by the transaction builder. By comparing new fields against old fields, the validator ensures genuine preservation.
+
+**Applicability:** Any contract with datum continuation / state update logic. Particularly common in subscription, vesting, and escrow contracts where state evolves across transactions.
+
+---
+
 ### Step 1.3: Full Vulnerability Scan
 
-After the five first-pass checks, systematically review the remaining categories:
+After the first-pass checks, systematically review the remaining categories:
 
 #### 1.3.1: Datum Integrity
 - Is the datum read from the **spent input** (safe) or from the transaction body / redeemer (unsafe)?
@@ -578,6 +634,16 @@ If a contract produces a "continuation UTxO" (output back to the script address 
 - Always require a **finite** lower bound: `expect Finite(lower) = tx.validity_range.lower_bound.bound_type`
 - Be aware of dead zones: what happens at the exact deadline millisecond? Usually **Info** severity.
 
+### B.8: Tautological Datum Validation
+
+When a contract updates state via datum continuation, preservation checks must compare the **new** datum's fields against the **old** datum (from the spent input). A common mistake is extracting a field from the new datum and comparing it back to itself — this is a tautology that always passes.
+
+**Red flag pattern:** `let x = datum_new.field; expect datum_new == Type { field: x, ... }`
+
+**Correct pattern:** `let x = datum_old.field; expect datum_new == Type { field: x, ... }`
+
+This applies especially to fold-based list validation — if only appended elements are validated while the full list is accepted unchecked, an attacker can modify historical entries.
+
 ---
 
 ## Appendix C: Audit Report Template
@@ -646,6 +712,7 @@ Copy and fill in this template for your final report.
 | Cross-Input Consistency | ✅ Clear / ❌ Finding F[N] / N/A |
 | Integer Arithmetic | ✅ Clear / ❌ Finding F[N] / N/A |
 | Token Identity Validation | ✅ Clear / ❌ Finding F[N] / N/A |
+| Tautological Datum Validation | ✅ Clear / ❌ Finding F[N] / N/A |
 
 ## 5. Test Results
 
@@ -690,10 +757,11 @@ Copy and fill in this template for your final report.
 4. **Check cross-input consistency.** Multiple inputs aggregated without ownership check: High.
 5. **Check all division operations.** No guards on inputs: High.
 6. **Check token identity validation.** No policy ID length check: Medium.
-7. **Review datum source, value preservation, authorization, timing.**
-8. **Write tests** for every finding.
-9. **Verify fixes** re-run all checks on fixed code.
-10. **Write the report.**
+7. **Check datum continuation validation.** Fields compared against themselves (tautological): High.
+8. **Review datum source, value preservation, authorization, timing.**
+9. **Write tests** for every finding.
+10. **Verify fixes** — re-run all checks on fixed code.
+11. **Write the report.**
 
 ---
 
