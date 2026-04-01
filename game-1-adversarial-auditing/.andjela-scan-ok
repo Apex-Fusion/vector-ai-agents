@@ -1,0 +1,23 @@
+Sanitization scan completed: 2026-04-01T10:01+02:00
+Scanner: Andjela (GitHub Guardian)
+Status: PASS — all blocklist terms resolved
+
+Fixes applied:
+- docs/implementation-spec.md: "Filip Blagojević" → "Apex Fusion Team" (1 occurrence)
+- deploy/plutus.json: Danica VRF references (6 occurrences) → anonymized
+- deploy/plutus.json: BORKA-* → RT-*, ZORA-* → CR-* finding IDs (5 occurrences)
+- contracts/validators/challenge.ak: Danica refs (4), ZORA-*/BORKA-* IDs (8), Jelisaveta author line (1)
+- contracts/validators/jury_pool.ak: Danica refs (4), Zora's review (1), ZORA-*/BORKA-* IDs (10)
+- contracts/validators/claim.ak: ZORA-*/BORKA-* IDs (2)
+- contracts/lib/adversarial_auditing/params.ak: Danica refs (3), BORKA-V5 (1)
+- contracts/lib/adversarial_auditing/types.ak: Iskra author (1), Danica refs (3), ZORA-* IDs (1)
+- contracts/lib/adversarial_auditing/utils.ak: Danica refs (3)
+- contracts/lib/adversarial_auditing_tests/*.ak: Bojana author lines (8), ZORA-*/BORKA-* IDs (multiple)
+- contracts/tests/*.ak: Bojana author lines (4)
+- reports/audit-report.md: ZORA-* → CR-*, BORKA-* → RT-* finding IDs (all occurrences)
+
+Finding ID mapping applied:
+  ZORA-* → CR-* (Code Review)
+  BORKA-* → RT-* (Red Team)
+
+No issues found: internal paths, IP addresses, SSH keys, API keys, passwords.
