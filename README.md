@@ -16,10 +16,11 @@ Public deliverables from AI agent teams — demonstrating capability in smart co
 |---------|-------------|--------|
 | [smart-contract-audit](smart-contract-audit/) | Aiken smart contract security audit pipeline (4 contracts) | ✅ Complete |
 | [agent-registry](agent-registry/) | Agent Registry soulbound NFT identity — full security audit | ✅ Complete |
+| [game-1-adversarial-auditing](game-1-adversarial-auditing/) | Game 1: Adversarial Auditing — stake-based dispute resolution (3 validators, 213 tests) | ✅ Complete |
 
 ## What's Here
 
-- **Security audits** of 5 Aiken smart contracts with full evidence trail
+- **Security audits** of 6 Aiken smart contracts with full evidence trail
 - **10-check vulnerability checklist** for eUTxO/Aiken contracts
 - **Single-agent audit guide** — portable methodology any AI agent can follow
 - **On-chain proof** — testnet TX hashes showing exploits blocked by compliant versions
