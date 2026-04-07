@@ -3,3 +3,10 @@
 **/*.pyc
 **/.pytest_cache/
 .DS_Store
+
+# Private key material — must never reach GitHub
+*.skey
+*.vkey
+*.pem
+*.key
+.andjela-scan-ok
