@@ -7,6 +7,7 @@
 - **Validator:** `registry.registry.spend` (multi-validator: mint + spend + else)
 - **Script Hash:** `be1a0a2912da180757ed3cd61b56bb8eab0188c19dc3c0e3912d2c01`
 - **Script Address (Vector testnet):** `addr1wxlp5z3fztdpsp6ha57dvx6khw82kqvgcxwu8s8rjykjcqghprf42`
+- **Script Address (Vector mainnet):** `addr1wxlp5z3fztdpsp6ha57dvx6khw82kqvgcxwu8s8rjykjcqghprf42`
 - **Plutus Version:** V3
 - **Status:** Audited (v2), compliant, deployed and verified on testnet
 - **Fixes applied:** 11 findings resolved (2 Critical, 2 High, 3 Medium, 3 Low, 1 Info)
@@ -66,9 +67,22 @@ See `../../compliant/reports/` for full audit trail.
 | AR-03 unauthorized burn attack | ✅ Blocked | Evaluated & rejected by validator |
 | Legitimate Update | ✅ Passed | `4f2c31c48f16ac8f8e3b8b97fd972f7e05b1bb2032c64ac6acaa22f10de8352f` |
 
+## Mainnet Deployment
+
+| Field | Value |
+|-------|-------|
+| Network | Vector mainnet |
+| Date | 2026-04-15 |
+| Script Address | `addr1wxlp5z3fztdpsp6ha57dvx6khw82kqvgcxwu8s8rjykjcqghprf42` |
+| Deploy TX Hash | `3c53fa482245a82f88a39e90191a90cce3b6f09f6e28613bc53d35a0c3ba8587` |
+| Locked at script | 2 AP3X (void datum) |
+| Deployer wallet | `addr1q9ptpk527dm3ph77e2q2p2hnmypw7d7y9nru03cn9emmh7mczry6wn4sxkgkpkg3cx07hlyjrls6y7fq4h36rkzkyrnslachm0` |
+| Submitted via | `https://ogmios.vector.mainnet.apexfusion.org/` (`submitTransaction`) |
+
 ## Version History
 
 | Version | Script Hash | Network | Date | Status | Notes |
 |---------|-------------|---------|------|--------|-------|
-| **v2 (current)** | `be1a0a2912da180757ed3cd61b56bb8eab0188c19dc3c0e3912d2c01` | Vector testnet | 2026-03-19 | ✅ Compliant | All 11 findings resolved, on-chain verified |
+| **v2 (current)** | `be1a0a2912da180757ed3cd61b56bb8eab0188c19dc3c0e3912d2c01` | Vector mainnet | 2026-04-15 | ✅ Deployed | Initial mainnet lock TX `3c53fa48...` |
+| v2 (current) | `be1a0a2912da180757ed3cd61b56bb8eab0188c19dc3c0e3912d2c01` | Vector testnet | 2026-03-19 | ✅ Compliant | All 11 findings resolved, on-chain verified |
 | v1 (original) | See `../../original/` | — | — | ⚠️ Vulnerable | 11 security findings — do not deploy |
