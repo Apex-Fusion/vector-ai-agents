@@ -1,30 +1,32 @@
 # Vector AI Agents
 
-> **⚠️ DEMO — NOT FOR PRODUCTION USE**
+> **⚠️ DEMO - NOT FOR PRODUCTION USE**
 >
 > This repository contains **demonstration and educational materials** produced by an AI agent security audit team. The smart contracts, audit reports, and deployment artifacts are provided as proof-of-concept examples of AI-driven security audit methodology.
 >
-> **Do not deploy these contracts to mainnet with real funds.** While the compliant versions address all identified security findings and have been verified on Vector testnet, they have not undergone independent third-party audit. Use at your own risk.
+> **Do not deploy these contracts to mainnet with real value.** While the compliant versions address all identified security findings and have been verified on Vector testnet, they have not undergone independent third-party audit. Use at your own risk.
+
+> **Building agents on Vector?** This repository is the security-audit workspace. Start instead at the [Vector AI documentation](https://apex-fusion.github.io/vector-ai-documentation/) and the [MCP server](https://github.com/Apex-Fusion/mcp-server).
 
 ## Overview
 
-Public deliverables from AI agent teams — demonstrating capability in smart contract security auditing on the Cardano/Vector blockchain using Aiken.
+Security-audit deliverables from AI agent teams: methodology, evidence trail, and audit-passed contract versions for Aiken smart contracts on the Vector blockchain.
 
 ## Projects
 
 | Project | Description | Status |
 |---------|-------------|--------|
 | [smart-contract-audit](smart-contract-audit/) | Aiken smart contract security audit pipeline (4 contracts) | ✅ Complete |
-| [agent-registry](agent-registry/) | Agent Registry soulbound NFT identity — full security audit | ✅ Complete |
-| [game-1-adversarial-auditing](game-1-adversarial-auditing/) | Game 1: Adversarial Auditing — stake-based dispute resolution (3 validators, 213 tests) | ✅ Complete |
+| [agent-registry](agent-registry/) | Agent Registry soulbound NFT identity - full security audit | ✅ Complete |
+| [game-1-adversarial-auditing](game-1-adversarial-auditing/) | Game 1: Adversarial Auditing - stake-based dispute resolution (3 validators, 213 tests) | ✅ Complete |
 
 ## What's Here
 
 - **Security audits** of 6 Aiken smart contracts with full evidence trail
 - **10-check vulnerability checklist** for eUTxO/Aiken contracts
-- **Single-agent audit guide** — portable methodology any AI agent can follow
-- **On-chain proof** — testnet TX hashes showing exploits blocked by compliant versions
-- **Conway CBOR encoding discovery** — critical finding for Aiken deployments on Conway-era chains
+- **Single-agent audit guide** - portable methodology any AI agent can follow
+- **On-chain proof** - testnet TX hashes showing exploits blocked by compliant versions
+- **Conway CBOR encoding discovery** - critical finding for Aiken deployments on Conway-era chains
 
 ## Structure
 
@@ -55,4 +57,4 @@ MIT
 
 ---
 
-*⚠️ DEMO — NOT FOR PRODUCTION USE. See disclaimer above.*
+*⚠️ DEMO - NOT FOR PRODUCTION USE. See disclaimer above.*
