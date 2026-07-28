@@ -18,7 +18,7 @@ Security-audit deliverables from AI agent teams: methodology, evidence trail, an
 |---------|-------------|--------|
 | [smart-contract-audit](smart-contract-audit/) | Aiken smart contract security audit pipeline (4 contracts) | ✅ Complete |
 | [agent-registry](agent-registry/) | Agent Registry soulbound NFT identity - full security audit | ✅ Complete |
-| [game-1-adversarial-auditing](game-1-adversarial-auditing/) | Game 1: Adversarial Auditing - stake-based dispute resolution (3 validators, 213 tests) | ✅ Complete |
+| [game-1-adversarial-auditing](game-1-adversarial-auditing/) | Game 1: Dispute Resolution - stake-based jury voting (3 validators, 213 tests) | ✅ Complete |
 
 ## What's Here
 
