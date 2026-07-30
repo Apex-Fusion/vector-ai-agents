@@ -1,6 +1,5 @@
 # WS4: Agent Infrastructure — Design Document
 
-**Owner:** Filip
 **Sprint:** March 16–20, 2026
 **Status:** Day 5 complete — 30 Aiken + 96 Python offline + 15 integration tests passing, full lifecycle verified on Vector testnet, demo script ready
 
@@ -104,7 +103,7 @@ The identity NFT lives inside the registry UTxO at the **script address**, never
 - **Update**: NFT moves from old UTxO to new UTxO (both at script address)
 - **Deregister**: NFT is burned — it never leaves the script
 
-This is stronger than Ethereum's ERC-5192 "soulbound" standard, where the token technically sits in the user's account and relies on transfer hooks to prevent movement. In eUTXO, the validator **physically controls** the NFT.
+ERC-5192 on Ethereum reaches "soulbound" semantics through transfer hooks while the token sits in the user's account. In eUTXO, the validator **physically controls** the NFT.
 
 ---
 

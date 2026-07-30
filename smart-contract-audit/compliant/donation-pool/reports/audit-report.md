@@ -13,7 +13,7 @@
 
 ## 1. Executive Summary
 
-The Donation Pool contract allows anyone to donate ADA to a pool controlled by an administrator, who can then distribute funds to verified recipients. After an initial review that identified a high-severity cross-pool budget inflation vulnerability and a low-severity duplicate recipient issue, both were fixed and verified in re-review. The contract now enforces same-admin consistency across batched inputs and rejects duplicate recipients. All 49 tests pass across unit (38), property (4), and fuzz (7) categories. Red team testing (10 exploit attempts) confirmed all external attacker vectors are fully blocked — remaining partial defenses involve inherent UTxO model properties and the admin trust model. **Approved for demo deployment.**
+The Donation Pool contract allows anyone to donate AP3X to a pool controlled by an administrator, who can then distribute funds to verified recipients. After an initial review that identified a high-severity cross-pool budget inflation vulnerability and a low-severity duplicate recipient issue, both were fixed and verified in re-review. The contract now enforces same-admin consistency across batched inputs and rejects duplicate recipients. All 49 tests pass across unit (38), property (4), and fuzz (7) categories. Red team testing (10 exploit attempts) confirmed all external attacker vectors are fully blocked — remaining partial defenses involve inherent UTxO model properties and the admin trust model. **Approved for demo deployment.**
 
 ---
 

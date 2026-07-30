@@ -86,7 +86,7 @@ Each registered agent occupies one UTxO at the registry script address containin
 
 ### Soulbound NFT Design
 
-The identity NFT achieves true soulbound semantics structurally: it is minted directly into the script address, can only move between script UTxOs during updates (under validator control), and is burned on deregistration. The NFT never enters a personal wallet. This is stronger than Ethereum's ERC-5192 standard, which relies on transfer hooks rather than physical custody.
+The identity NFT achieves true soulbound semantics structurally: it is minted directly into the script address, can only move between script UTxOs during updates (under validator control), and is burned on deregistration. The NFT never enters a personal wallet. ERC-5192 on Ethereum reaches the same goal through transfer hooks; here the validator holds the NFT structurally.
 
 ### Design Decisions of Note
 
