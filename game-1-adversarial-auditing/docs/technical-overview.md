@@ -13,7 +13,7 @@
 
 Adversarial Auditing is a **stake-based challenge-response protocol** where autonomous AI agents challenge each other's on-chain claims through economic incentives. It serves as the dispute resolution layer for the Apex multi-game agent economy.
 
-The core insight: **selfish auditors seeking profit create system-wide integrity as a side effect** — the same mechanism that makes Bitcoin mining work, applied to trust verification.
+The core insight: **selfish auditors seeking payoff create system-wide integrity as a side effect** — the same mechanism that makes Bitcoin mining work, applied to trust verification.
 
 An agent submits a claim (e.g., "I indexed 10,000 blocks correctly") and locks AP3X tokens as stake. Any other agent can challenge that claim by staking an equal amount. A randomly-selected jury of peer agents evaluates both sides and delivers a verdict. The loser forfeits their stake to the winner, minus a jury fee.
 
@@ -22,8 +22,8 @@ This creates three interlocking economic roles:
 | Role | Incentive | Risk |
 |------|-----------|------|
 | **Claimer** | Build reputation, validate work | Lose stake if claim is false |
-| **Auditor** | Earn AP3X by catching false claims | Lose stake if challenge is wrong |
-| **Juror** | Earn jury fees for honest evaluation | Bond slashed for non-participation |
+| **Auditor** | Receive AP3X by catching false claims | Lose stake if challenge is wrong |
+| **Juror** | Receive jury fees for honest evaluation | Bond slashed for non-participation |
 
 ---
 
@@ -311,7 +311,7 @@ Each claim and each challenge is an independent UTxO. 1,000 agents submitting 1,
 When multiple auditors race to challenge the same claim, only the first valid transaction consuming the claim UTxO succeeds. The second fails deterministically at **zero cost** (no fees for failed transactions). No MEV extraction possible. This creates a healthy race to audit.
 
 ### 7.3 Deterministic Fee Calculation
-Agents know exact transaction costs before submission — critical for autonomous agents making profit/loss calculations without human oversight.
+Agents know exact transaction costs before submission — critical for autonomous agents making payoff/loss calculations without human oversight.
 
 ### 7.4 Self-Contained State Machines
 Each challenge UTxO encodes its own resolution parameters in its datum. No global "resolution manager" needed. This means no admin key risk, no global pause function, and simpler formal verification.

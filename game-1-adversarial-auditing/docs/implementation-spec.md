@@ -13,7 +13,7 @@
 
 Adversarial Auditing is a stake-based challenge-response game where agents stake AP3X to challenge the correctness of other agents' on-chain claims. It serves as the **dispute resolution layer** for the entire Vector agent economy (Core Stack: Games 1 + 3 + 5 + 12).
 
-Selfish auditors seeking profit create system-wide integrity as a side effect — the Bitcoin analogy applied to trust verification.
+Selfish auditors seeking payoff create system-wide integrity as a side effect — the Bitcoin analogy applied to trust verification.
 
 ---
 
@@ -717,7 +717,7 @@ class AuditingClient:
     },
     {
       "name": "auditing_browse_claims",
-      "description": "Browse open claims that can be audited for profit",
+      "description": "Browse open claims that can be audited at positive expected payoff",
       "input_schema": {
         "claim_type": "string (optional filter)",
         "min_stake": "number (optional minimum stake)"
@@ -821,7 +821,7 @@ The Koios indexer must track:
 
 A dedicated monitoring agent (Game 9) can:
 - Watch for new claims and evaluate them automatically
-- Challenge suspicious claims (profitable if successful)
+- Challenge suspicious claims (positive-payoff if successful)
 - Alert human operators of high-stake challenges
 - Compute audit diversity metrics
 - Feed data to the AFI Security Score component
@@ -845,18 +845,18 @@ Claimer  True      (-fee, -stake)  (0, 0)
 
 | Player Type | Claimer Incentive | Auditor Incentive | Juror Incentive |
 |-------------|-------------------|-------------------|-----------------|
-| Type 1 (Solo) | Build reputation cheaply | Earn AP3X from catching frauds | Earn jury fees |
+| Type 1 (Solo) | Build reputation cheaply | Receive AP3X from catching frauds | Receive jury fees |
 | Type 2 (Swarm) | Validate swarm outputs | Specialize auditor agents | Specialize juror agents |
 | Type 3 (Autonomous) | Automated claim pipeline | Automated audit scanning | Automated jury service |
 
 ### 10.3 Economic Viability
 
-**For auditors to participate, auditing must be profitable**:
+**For auditors to participate, auditing must be positive-payoff**:
 
 ```
 E[auditor_profit] = P(false_claim) × claim_stake × (1 - jury_fee_rate) - P(true_claim) × auditor_stake - tx_costs
 
-Auditing is profitable when:
+Auditing carries positive expected payoff when:
   P(false_claim) > (auditor_stake + tx_costs) / (claim_stake × (1 - jury_fee_rate) + auditor_stake)
 ```
 
@@ -865,7 +865,7 @@ Auditing is profitable when:
 - Expected loss per challenge: 0.95 × 50 = 47.5 AP3X
 - Net: -45.25 AP3X per random challenge
 
-**Implication**: Auditors must be *selective*, not random. They profit by identifying likely-false claims through off-chain analysis. This is the intended behavior — it rewards competent auditors over random challengers.
+**Implication**: Auditors must be *selective*, not random. They come out ahead by identifying likely-false claims through off-chain analysis. This is the intended behavior — it rewards competent auditors over random challengers.
 
 ### 10.4 Sybil Analysis
 
@@ -1010,7 +1010,7 @@ cost_to_challenge = tx_fee(~0.3 AP3X) + stake_amount(50 AP3X)
 potential_reward = claim_stake(50 AP3X) × (1 - jury_fee_rate)
 ```
 
-No gas estimation uncertainty. No "transaction failed, lost gas" scenarios. This is critical for autonomous agents that must make profit/loss calculations without human oversight.
+No gas estimation uncertainty. No "transaction failed, lost gas" scenarios. This is critical for autonomous agents that must make payoff/loss calculations without human oversight.
 
 ### 16.5 UTXO Provenance for Audit Trail
 
@@ -1141,7 +1141,7 @@ STEP 4 — Payout:
   Claim state: Invalidated
 
 RESULT:
-  - AuditBot profit: +100 AP3X (minus ~0.6 AP3X tx fees)
+  - AuditBot payoff: +100 AP3X (minus ~0.6 AP3X tx fees)
   - IndexBot loss: -100 AP3X
   - System benefit: false indexing claim removed, data integrity improved
   - AFI impact: Security Score +1 (false claim caught)

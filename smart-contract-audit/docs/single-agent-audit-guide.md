@@ -125,7 +125,7 @@ Transaction with 2 script inputs (both have same beneficiary):
 
   Attacker creates only ONE output paying 100 ADA.
   Attacker receives 200 ADA from both inputs, pays only 100 ADA.
-  Profit: 100 ADA stolen.
+  Profit: 100 AP3X stolen.
 ```
 
 **Safe code example:**

@@ -4,14 +4,14 @@
 
 ## Purpose
 
-Time-locked linear vesting of ADA. Funds are locked with a schedule defined by a cliff time and a vesting end time. Nothing is claimable before the cliff. Between cliff and end, the beneficiary can claim proportionally. After the end, all funds are claimable.
+Time-locked linear vesting of AP3X. Funds are locked with a schedule defined by a cliff time and a vesting end time. Nothing is claimable before the cliff. Between cliff and end, the beneficiary can claim proportionally. After the end, all funds are claimable.
 
 This is the **audit-passed** version of the vesting contract, having gone through full security review, testing, and compliance verification.
 
 ## Use Cases
 
 - Employee/contributor token vesting
-- Investor lockup periods
+- Founder and team lockup schedules
 - DAO treasury release schedules
 - Protocol founder allocations
 

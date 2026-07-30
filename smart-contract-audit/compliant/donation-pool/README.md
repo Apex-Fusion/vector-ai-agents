@@ -4,7 +4,7 @@
 
 ## Purpose
 
-A pool contract where anyone can donate ADA (by sending to the script address with an inline datum specifying the admin), and the admin can distribute funds to verified recipients in batch operations.
+A pool contract where anyone can donate AP3X (by sending to the script address with an inline datum specifying the admin), and the admin can distribute funds to verified recipients in batch operations.
 
 This is the **audit-passed** version of the donation pool contract, having gone through full security review, testing, and compliance verification.
 

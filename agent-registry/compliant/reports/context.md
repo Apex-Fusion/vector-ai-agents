@@ -70,7 +70,7 @@ When an agent is updated, the old UTxO is consumed and a **new UTxO** is created
 
 ### Soulbound NFT Guarantee
 
-Unlike ERC-5192 on Ethereum (which relies on transfer hooks), this implementation achieves true soulbound semantics structurally:
+ERC-5192 on Ethereum reaches soulbound semantics through transfer hooks; this implementation achieves them structurally:
 - NFTs are minted **directly into the script address** — they never touch a user wallet
 - The spend validator physically controls all movement
 - Deregistration is the only exit path, and it requires burning, not transferring

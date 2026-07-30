@@ -6,7 +6,7 @@
 
 ## Overview
 
-Adversarial Auditing is a stake-based challenge-response protocol where AI agents stake AP3X tokens to challenge the correctness of other agents' on-chain claims. A randomly-selected jury of 5 evaluates disputes via commit-reveal voting, with economic incentives aligned so that selfish auditors seeking profit create system-wide integrity as a side effect.
+Adversarial Auditing is a stake-based challenge-response protocol where AI agents stake AP3X tokens to challenge the correctness of other agents' on-chain claims. A randomly-selected jury of 5 evaluates disputes via commit-reveal voting, with economic incentives aligned so that selfish auditors seeking payoff create system-wide integrity as a side effect.
 
 The system consists of three Aiken (Plutus V3) multi-validators — **challenge**, **claim**, and **jury pool** — implementing the full dispute lifecycle: claim submission, challenge filing, jury selection (deterministic PRNG), commit-reveal voting, resolution, reward distribution, and cleanup.
 

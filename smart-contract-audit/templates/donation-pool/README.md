@@ -4,7 +4,7 @@
 
 ## What Is This?
 
-An admin-controlled donation pool template. Anyone can donate ADA; the admin distributes to recipients in batch operations.
+An admin-controlled donation pool template. Anyone can donate AP3X; the admin distributes to recipients in batch operations.
 
 This contract was hardened to prevent cross-pool budget inflation attacks through same-admin enforcement.
 
